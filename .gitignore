@@ -1,2 +1,7 @@
 /.env
+/icat/certs/cert.pem
+/icat/certs/certchain.pem
+/icat/certs/key.pem
+/icat/certs/openssl.cnf
+/icat/certs/rootcert.pem
 /icat/icat-config

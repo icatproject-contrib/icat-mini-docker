@@ -16,6 +16,7 @@ services:
     ports:
       - "443:8181"
     volumes:
+      - ./icat/certs:/etc/glassfish/certs:ro
       - ./icat/icat-config:${GLASSFISH_HOME}/etc/icat:ro
       - gfdomain:${GLASSFISH_HOME}/glassfish/domains
       - storage:/srv/ids/storage

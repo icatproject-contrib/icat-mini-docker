@@ -1,0 +1,31 @@
+#! /bin/sh
+
+maindir=$(cd $(dirname $0)/..; pwd)
+
+. $maindir/.env
+
+wd=$maindir/icat/certs
+mkdir -p $wd
+cd $wd
+
+cat <<EOF > openssl.cnf
+[ req ]
+prompt                  = no
+default_bits            = 2048
+distinguished_name      = dn
+string_mask             = utf8only
+x509_extensions         = v3_req
+
+[ dn ]
+CN = $HOSTNAME
+
+[ v3_req ]
+subjectAltName = DNS:icat, DNS:$HOSTNAME
+EOF
+
+openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 7305 \
+     -out cert.pem -keyout key.pem -config openssl.cnf
+chmod go-rwx key.pem
+
+ln -s cert.pem rootcert.pem
+ln -s rootcert.pem certchain.pem
