@@ -1,0 +1,18 @@
+#! /bin/sh
+
+date=$(date +%y%m%d-%H%M%S)
+
+dbdir=mysql/var
+
+mkdir -p $dbdir
+
+dumpfile=$dbdir/icatdump-$date.sql
+
+tmpfile=$(mktemp -p $dbdir)
+
+sudo docker exec $(sudo docker-compose ps -q mysql) \
+        mysqldump --routines --databases icat icat_authn_db > $tmpfile \
+    && mv -n $tmpfile $dumpfile \
+    && test ! -f $tmpfile \
+    && chmod 0600 $dumpfile \
+    || exit 1
