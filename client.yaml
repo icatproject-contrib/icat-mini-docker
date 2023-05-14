@@ -1,0 +1,24 @@
+version: '3'
+
+
+services:
+
+  client-jurko:
+    build:
+      context: ./client/image-jurko
+    volumes:
+      - storage:/srv/ids/storage
+      - ./client/icat.cfg:/home/user/.config/icat/icat.cfg:ro
+      - ./client/tmp:/home/user/tmp
+
+  client-community:
+    build:
+      context: ./client/image-community
+    volumes:
+      - storage:/srv/ids/storage
+      - ./client/icat.cfg:/home/user/.config/icat/icat.cfg:ro
+      - ./client/tmp:/home/user/tmp
+
+
+volumes:
+  storage:

@@ -7,10 +7,18 @@ maindir = Path(__file__).resolve().parent.parent
 icat_cfg_file = maindir / 'icat' / 'icat-config' / 'CONFIG'
 env_file = maindir / '.env'
 
+class VersionTuple(tuple):
+    """Convert a version string to a tuple of ints.
+    """
+    def __new__(cls, s):
+        return super().__new__(cls, (int(c) for c in s.split('.')))
+
 cfg = {
     'COMPOSE_FILE': 'compose.yaml',
     'COMPOSE_PROJECT_NAME': 'icat-mini',
     'IMAGE': None,
+    'VERSION': None,
+    'SUDS': None,
     'GLASSFISH_HOME': None,
     'HOSTNAME': socket.getfqdn(),
 }
@@ -19,6 +27,10 @@ with icat_cfg_file.open('rt') as f:
     for l in f:
         k, v = l.strip().split('=')
         cfg[k] = v
+
+_, img_version = cfg['IMAGE'].split(':')
+cfg['VERSION'] = img_version
+cfg['SUDS'] = 'community' if VersionTuple(img_version) >= (4, 9) else 'jurko'
 
 with env_file.open('wt') as f:
     for k in cfg:
