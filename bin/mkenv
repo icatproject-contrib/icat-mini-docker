@@ -1,15 +1,25 @@
-#! /bin/sh
+#! /usr/bin/python3
 
-maindir=$(cd $(dirname $0)/..; pwd)
+from pathlib import Path
+import socket
 
-. $maindir/icat/icat-config/CONFIG
+maindir = Path(__file__).resolve().parent.parent
+icat_cfg_file = maindir / 'icat' / 'icat-config' / 'CONFIG'
+env_file = maindir / '.env'
 
-HOSTNAME=$(hostname -f)
+cfg = {
+    'COMPOSE_FILE': 'compose.yaml',
+    'COMPOSE_PROJECT_NAME': 'icat-mini',
+    'IMAGE': None,
+    'GLASSFISH_HOME': None,
+    'HOSTNAME': socket.getfqdn(),
+}
 
-cat <<EOF > $maindir/.env
-COMPOSE_FILE=compose.yaml
-COMPOSE_PROJECT_NAME=icat-mini
-IMAGE=$IMAGE
-GLASSFISH_HOME=$GLASSFISH_HOME
-HOSTNAME=$HOSTNAME
-EOF
+with icat_cfg_file.open('rt') as f:
+    for l in f:
+        k, v = l.strip().split('=')
+        cfg[k] = v
+
+with env_file.open('wt') as f:
+    for k in cfg:
+        print("%s=%s" % (k, cfg[k]), file=f)
