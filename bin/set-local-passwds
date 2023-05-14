@@ -1,0 +1,141 @@
+#! /usr/bin/python3
+"""Set random passwords
+"""
+
+import configparser
+from pathlib import Path
+import re
+import secrets
+import string
+import subprocess
+
+maindir = Path(__file__).resolve().parent.parent
+icatcfgdir = maindir / 'icat' / 'icat-config'
+env_file = maindir / '.env'
+
+db_pwds = {
+    'icat': {},
+}
+
+icatuser_pwds = {
+    'root': { 'cfgname': 'root' },
+    'idsreader': { 'cfgname': 'idsreader' },
+    'useroffice': { 'cfgname': 'useroffice' },
+    'dataingest': { 'cfgname': 'ingest' },
+}
+
+class VersionTuple(tuple):
+    """Convert a version string to a tuple of ints.
+    """
+    def __new__(cls, s):
+        return super().__new__(cls, (int(c) for c in s.split('.')))
+
+def get_version():
+    with env_file.open('rt') as f:
+        for l in f:
+            k, v = l.strip().split('=')
+            if k == 'VERSION':
+                return VersionTuple(v)
+
+_pw_alphabet = string.ascii_letters + string.digits
+
+def get_pw():
+    return ( ''.join(secrets.choice(_pw_alphabet) for i in range(14)) )
+
+def mk_pw_hash(pw):
+    p = subprocess.run(['/usr/bin/mkpasswd', '-m', 'sha-256', '-s'],
+                       input=pw, stdout=subprocess.PIPE, check=True,
+                       universal_newlines=True)
+    return p.stdout.strip()
+
+def filter_file_re(path, users, pattern, repl_template, def_user=None):
+    with path.open('rt') as f:
+        lines = []
+        for l in f:
+            m = pattern.match(l)
+            if m:
+                try:
+                    u = m.group('user')
+                except IndexError:
+                    if def_user:
+                        u = def_user
+                    else:
+                        raise
+                subst = dict(users[u], user=u, match=m.group(0))
+                subst.update(m.groupdict())
+                l = string.Template(repl_template).substitute(subst) + "\n"
+            lines.append(l)
+    with path.open('wt') as f:
+        for l in lines:
+            print(l, file=f, end='')
+
+for u in db_pwds:
+    db_pwds[u]['pw'] = get_pw()
+
+for u in icatuser_pwds:
+    pw = get_pw()
+    icatuser_pwds[u]['pw'] = pw
+    icatuser_pwds[u]['pw_hash'] = mk_pw_hash(pw)
+
+mysql_init = maindir / Path('mysql/init/00-init-icat.sql')
+pattern = re.compile(r"CREATE USER '(?P<user>\w+)'@'%' IDENTIFIED BY")
+repl_template = "$match '$pw';"
+filter_file_re(mysql_init, db_pwds, pattern, repl_template)
+
+version = get_version()
+
+if version < (4, 6):
+    setup_props = [
+        icatcfgdir / Path('authn_db/authn_db-setup.properties'),
+        icatcfgdir / Path('icat.server/icat-setup.properties'),
+    ]
+    pattern = re.compile(r"^(?P<pre>dbProperties=.*):password=.+?:(?P<post>.*)$")
+    repl_template = "$pre:password=$pw:$post"
+else:
+    if version < (4, 9):
+        setup_props = [
+            icatcfgdir / Path('authn.db/authn_db-setup.properties'),
+            icatcfgdir / Path('icat.server/icat-setup.properties'),
+        ]
+    else:
+        setup_props = [
+            icatcfgdir / Path('authn.db/setup.properties'),
+            icatcfgdir / Path('icat.server/setup.properties'),
+        ]
+    pattern = re.compile(r"db.password\s*=")
+    repl_template = "$match $pw"
+for p in setup_props:
+    filter_file_re(p, db_pwds, pattern, repl_template, def_user='icat')
+
+if version < (4, 6):
+    simple_run_props = icatcfgdir / Path('authn_simple/authn_simple.properties')
+elif version < (4, 9):
+    simple_run_props = icatcfgdir / Path('authn.simple/authn_simple.properties')
+else:
+    simple_run_props = icatcfgdir / Path('authn.simple/run.properties')
+pattern = re.compile(r"user\.(?P<user>\w+)\.password\s*=")
+repl_template = "$match $pw_hash"
+filter_file_re(simple_run_props, icatuser_pwds, pattern, repl_template)
+
+if version < (4, 9):
+    ids_run_props = icatcfgdir / Path('ids.server/ids.properties')
+else:
+    ids_run_props = icatcfgdir / Path('ids.server/run.properties')
+pattern = re.compile(r"reader = simple username (?P<user>\w+) password")
+repl_template = "$match $pw"
+filter_file_re(ids_run_props, icatuser_pwds, pattern, repl_template)
+
+cfg_files = [
+    maindir / Path('client/icat.cfg'),
+]
+for cfg in cfg_files:
+    config = configparser.ConfigParser()
+    with cfg.open('rt') as f:
+        config.read_file(f)
+    for u in icatuser_pwds:
+        cfgname = icatuser_pwds[u]['cfgname']
+        pw = icatuser_pwds[u]['pw']
+        if config.has_section(cfgname):
+            config[cfgname]['password'] = pw
+    with cfg.open('wt') as f:
+        config.write(f)
