@@ -28,4 +28,3 @@ openssl req -newkey rsa:2048 -nodes -x509 -sha256 -days 7305 \
 chmod go-rwx key.pem
 
 ln -s cert.pem rootcert.pem
-ln -s rootcert.pem certchain.pem
