@@ -20,6 +20,7 @@ cfg = {
     'VERSION': None,
     'SUDS': None,
     'GLASSFISH_HOME': None,
+    'GF_DOMAIN_LIBS': None,
     'HOSTNAME': socket.getfqdn(),
 }
 

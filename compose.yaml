@@ -21,7 +21,7 @@ services:
       - gfdomain:${GLASSFISH_HOME}/glassfish/domains
       - storage:/srv/ids/storage
     environment:
-      GF_DOMAIN_LIBS: /usr/share/java/mysql-connector-java.jar
+      GF_DOMAIN_LIBS:
 
 
 volumes:
