@@ -1,16 +1,16 @@
-FROM rkrahl/opensuse:15.4
+FROM rkrahl/opensuse:15.5
 
-RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:/Rotkraut:/Data/15.4/home:Rotkraut:Data.repo && \
+RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:/Rotkraut:/Data/15.5/home:Rotkraut:Data.repo && \
     zypper --non-interactive --gpg-auto-import-keys refresh home_Rotkraut_Data && \
     zypper --non-interactive install \
 	less \
 	mariadb-client \
 	python-icat-examples \
 	python-icat-man \
-	python3 \
-	python3-PyYAML \
-	python3-icat \
-	python3-lxml && \
+	python311 \
+	python311-PyYAML \
+	python311-icat \
+	python311-lxml && \
     ln -sf ../usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 RUN groupadd -r -g 801 icat && \
