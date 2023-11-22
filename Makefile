@@ -31,6 +31,10 @@ install: icat/icat-config
 set-passwds: .env reset-owner
 	bin/set-local-passwds
 
+set-version: icat/icat-config
+	git -C icat/icat-config checkout testing/icat-mini/$(VERSION)
+	bin/mkenv
+
 icat/icat-config:
 	git clone --branch testing/icat-mini/$(VERSION) \
 	    $(GITHUB)icatproject-contrib/icat-config.git $@
@@ -44,4 +48,5 @@ icat/certs/cert.pem:
 client/tmp:
 	mkdir -p $@
 
-.PHONY: up down build run-client fix-perms reset-owner install set-passwds
+.PHONY: up down build run-client fix-perms reset-owner install \
+	set-passwds set-version
