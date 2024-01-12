@@ -42,7 +42,7 @@ icat/icat-config:
 .env: icat/icat-config
 	bin/mkenv
 
-icat/certs/cert.pem:
+icat/certs/cert.pem: .env
 	bin/mkcert
 
 client/tmp:
