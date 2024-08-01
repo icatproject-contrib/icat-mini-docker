@@ -10,10 +10,11 @@ down: .env
 
 build: .env
 	sudo docker-compose pull
-	sudo docker-compose -f client.yaml build --pull
+	sudo docker-compose -f compose.yaml -f client.yaml build --pull
 
 run-client: .env fix-perms
-	sudo docker-compose -f client.yaml run --rm client-`sed -n -e 's/SUDS=\(.*\)/\1/ p' .env`
+	sudo docker-compose -f compose.yaml -f client.yaml run --rm \
+	    client-`sed -n -e 's/SUDS=\(.*\)/\1/ p' .env`
 
 fix-perms: icat/icat-config icat/certs/cert.pem client/tmp
 	sudo chgrp -R '800' icat/icat-config
