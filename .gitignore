@@ -1,5 +1,5 @@
 /.env
-/client/tmp
+/client/share
 /icat/certs/cert.pem
 /icat/certs/certchain.pem
 /icat/certs/key.pem

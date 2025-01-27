@@ -9,7 +9,7 @@ services:
     volumes:
       - storage:/srv/ids/storage
       - ./client/icat.cfg:/home/user/.config/icat/icat.cfg:ro
-      - ./client/tmp:/home/user/tmp
+      - ./client/share:/home/user/share
 
   client-community:
     build:
@@ -17,7 +17,7 @@ services:
     volumes:
       - storage:/srv/ids/storage
       - ./client/icat.cfg:/home/user/.config/icat/icat.cfg:ro
-      - ./client/tmp:/home/user/tmp
+      - ./client/share:/home/user/share
 
 
 volumes:
