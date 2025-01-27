@@ -27,7 +27,7 @@ reset-owner: icat/certs/cert.pem client/tmp
 	sudo chown -h $(LOCAL_USER) icat/certs/*.pem
 	sudo chown -R $(LOCAL_USER) client/icat.cfg client/tmp
 
-install: icat/icat-config
+init: icat/icat-config
 
 set-passwds: .env reset-owner
 	bin/set-local-passwds
@@ -49,5 +49,5 @@ icat/certs/cert.pem: .env
 client/tmp:
 	mkdir -p $@
 
-.PHONY: up down build run-client fix-perms reset-owner install \
+.PHONY: up down build run-client fix-perms reset-owner init \
 	set-passwds set-version
