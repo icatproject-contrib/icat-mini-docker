@@ -6,4 +6,4 @@
 /icat/certs/openssl.cnf
 /icat/certs/rootcert.pem
 /icat/icat-config
-/mysql/var
+/mariadb/var

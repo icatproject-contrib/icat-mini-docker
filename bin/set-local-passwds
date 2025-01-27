@@ -77,10 +77,10 @@ for u in icatuser_pwds:
     icatuser_pwds[u]['pw'] = pw
     icatuser_pwds[u]['pw_hash'] = mk_pw_hash(pw)
 
-mysql_init = maindir / Path('mysql/init/00-init-icat.sql')
+mariadb_init = maindir / Path('mariadb/init/00-init-icat.sql')
 pattern = re.compile(r"CREATE USER '(?P<user>\w+)'@'%' IDENTIFIED BY")
 repl_template = "$match '$pw';"
-filter_file_re(mysql_init, db_pwds, pattern, repl_template)
+filter_file_re(mariadb_init, db_pwds, pattern, repl_template)
 
 version = get_version()
 

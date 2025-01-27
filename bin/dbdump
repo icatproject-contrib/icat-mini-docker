@@ -2,7 +2,7 @@
 
 date=$(date +%y%m%d-%H%M%S)
 
-dbdir=mysql/var
+dbdir=mariadb/var
 
 mkdir -p $dbdir
 
@@ -10,7 +10,7 @@ dumpfile=$dbdir/icatdump-$date.sql
 
 tmpfile=$(mktemp -p $dbdir)
 
-sudo docker exec $(sudo docker-compose ps -q mysql) \
+sudo docker exec $(sudo docker-compose ps -q mariadb) \
         mysqldump --routines --databases icat icat_authn_db > $tmpfile \
     && mv -n $tmpfile $dumpfile \
     && test ! -f $tmpfile \
