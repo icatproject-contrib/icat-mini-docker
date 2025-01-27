@@ -1,5 +1,8 @@
 # .bashrc
 
+export LANG=en_US.UTF-8
+unset LC_ALL
+
 unalias -a
 alias la='env LC_COLLATE=C ls -la -N --color=tty -T 0'
 alias ll='env LC_COLLATE=C ls -l -N --color=tty -T 0'
