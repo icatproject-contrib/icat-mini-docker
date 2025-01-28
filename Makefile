@@ -43,7 +43,8 @@ icat/icat-config:
 .env: icat/icat-config
 	bin/mkenv
 
-icat/certs/cert.pem: .env
+icat/certs/cert.pem:
+	$(MAKE) .env
 	bin/mkcert
 
 client/share:
