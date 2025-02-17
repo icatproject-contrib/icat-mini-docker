@@ -1,6 +1,6 @@
-FROM rkrahl/opensuse:15.5
+FROM rkrahl/opensuse:15.6
 
-RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:/Rotkraut:/Data/15.5/home:Rotkraut:Data.repo && \
+RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:/Rotkraut:/Data/15.6/home:Rotkraut:Data.repo && \
     zypper --non-interactive --gpg-auto-import-keys refresh home_Rotkraut_Data && \
     zypper --non-interactive install \
 	less \
