@@ -3,17 +3,17 @@ GITHUB = https://github.com/
 LOCAL_USER = $(shell id -u)
 
 up: .env fix-perms
-	sudo docker-compose up -d
+	sudo docker compose up -d
 
 down: .env
-	sudo docker-compose down -v
+	sudo docker compose down -v
 
 build: .env
-	sudo docker-compose pull
-	sudo docker-compose -f compose.yaml -f client.yaml build --pull
+	sudo docker compose pull
+	sudo docker compose -f compose.yaml -f client.yaml build --pull
 
 run-client: .env fix-perms
-	sudo docker-compose -f compose.yaml -f client.yaml run --rm \
+	sudo docker compose -f compose.yaml -f client.yaml run --rm \
 	    client-`sed -n -e 's/SUDS=\(.*\)/\1/ p' .env`
 
 fix-perms: icat/icat-config icat/certs/cert.pem client/share
