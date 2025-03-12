@@ -10,6 +10,7 @@ RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/
 	python311 \
 	python311-PyYAML \
 	python311-icat \
+	python311-requests \
 	python311-lxml && \
     ln -sf ../usr/share/zoneinfo/Europe/Berlin /etc/localtime
 

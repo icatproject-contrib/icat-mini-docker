@@ -10,6 +10,7 @@ RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/
 	python3 \
 	python3-PyYAML \
 	python3-icat \
+	python3-requests \
 	python3-lxml \
 	python3-suds-jurko && \
     ln -sf ../usr/share/zoneinfo/Europe/Berlin /etc/localtime
