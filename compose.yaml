@@ -25,7 +25,7 @@ services:
       - gfdomain:${GLASSFISH_HOME}/glassfish/domains
       - storage:/srv/ids/storage
     environment:
-      GF_DOMAIN_LIBS:
+      GF_DOMAIN_LIBS: ${GF_DOMAIN_LIBS}
 
 
 volumes:
