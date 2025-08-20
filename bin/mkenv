@@ -27,6 +27,8 @@ cfg = {
 with icat_cfg_file.open('rt') as f:
     for l in f:
         k, v = l.strip().split('=')
+        if k == 'IMAGE' and v.startswith('rkrahl'):
+            v = "docker.io/%s" % v
         cfg[k] = v
 
 _, img_version = cfg['IMAGE'].split(':')

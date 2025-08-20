@@ -4,7 +4,7 @@ version: '3'
 services:
 
   mariadb:
-    image: rkrahl/mariadb
+    image: docker.io/rkrahl/mariadb
     volumes:
       - ./mariadb/init:/etc/mysql.d:ro
       - db:/var/lib/mysql
