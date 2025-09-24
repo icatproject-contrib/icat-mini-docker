@@ -10,7 +10,7 @@ dumpfile=$dbdir/icatdump-$date.sql
 
 tmpfile=$(mktemp -p $dbdir)
 
-sudo podman compose exec mariadb \
+sudo podman-compose exec mariadb \
         mysqldump --routines --databases icat icat_authn_db > $tmpfile \
     && mv -n $tmpfile $dumpfile \
     && test ! -f $tmpfile \

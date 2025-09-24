@@ -3,17 +3,17 @@ GITHUB = https://github.com/
 LOCAL_USER = $(shell id -u)
 
 up: .env fix-perms
-	sudo podman compose up -d
+	sudo podman-compose up -d
 
 down: .env
-	sudo podman compose down -v
+	sudo podman-compose down -v
 
 build: .env
-	sudo podman compose pull
-	sudo podman compose -f compose.yaml -f client.yaml build --pull
+	sudo podman-compose pull
+	sudo podman-compose -f compose.yaml -f client.yaml build --pull
 
 run-client: .env fix-perms
-	sudo podman compose -f compose.yaml -f client.yaml run --rm \
+	sudo podman-compose -f compose.yaml -f client.yaml run --rm \
 	    client-`sed -n -e 's/SUDS=\(.*\)/\1/ p' .env`
 
 fix-perms: icat/icat-config icat/certs/cert.pem client/share
