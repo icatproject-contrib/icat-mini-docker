@@ -1,4 +1,4 @@
-VERSION = 6.1
+VERSION = 6.2
 GITHUB = https://github.com/
 LOCAL_USER = $(shell id -u)
 
