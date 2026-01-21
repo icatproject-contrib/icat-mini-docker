@@ -2,6 +2,10 @@ VERSION = 6.2
 GITHUB = https://github.com/
 LOCAL_USER = $(shell id -u)
 
+start: up
+
+stop: down
+
 up: .env fix-perms
 	sudo docker compose up -d
 
@@ -50,5 +54,5 @@ icat/certs/cert.pem:
 client/share:
 	mkdir -p $@
 
-.PHONY: up down build run-client fix-perms reset-owner init \
-	set-passwds set-version
+.PHONY: start stop up down build run-client \
+	fix-perms reset-owner init set-passwds set-version
